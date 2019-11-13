@@ -1,13 +1,17 @@
 import { controller, injectable } from "snowball/app";
 import Home from "../containers/Home";
+import HomeService from "../services/HomeService";
 
 @controller(Home)
 class HomeController {
-    // constructor({ location }, context) {
-    // }
+    @injectable homeService;
+
+    constructor(props, context) {
+        this.homeService = new HomeService();
+    }
 
     onInit() {
-        console.log(this.ctx.service.user);
+        this.homeService.init();
     }
 }
 

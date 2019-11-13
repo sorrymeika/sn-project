@@ -374,9 +374,9 @@ module.exports = function (webpackEnv) {
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               include: [
-                path.resolve(paths.appPath, '../snowball'),
-                path.resolve(paths.appPath, '../nuclear'),
-                path.resolve(paths.appPath, '../sn-cornerstone')
+                path.resolve(paths.appPath, '../../snowball'),
+                path.resolve(paths.appPath, '../../nuclear'),
+                path.resolve(paths.appPath, '../../sn-cornerstone')
               ],
 
               loader: require.resolve('babel-loader'),

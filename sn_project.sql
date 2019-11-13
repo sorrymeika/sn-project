@@ -31,7 +31,11 @@ grant ALL on sn_project.* to 'dev'@'localhost';
 -- 使用数据库
 use sn_project;
 
-
 create table project (
     id int(5) primary key auto_increment,
-)
+    name varchar(50) not null,
+    path varchar(250) not null,
+    type int(2) not null -- 项目类型: { 1: 'html', 2: 'nodejs', 3: 'java' }
+);
+
+insert into project (name,path,type) values ('snowball','/data/static/snowball',1);

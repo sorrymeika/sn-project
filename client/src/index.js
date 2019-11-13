@@ -10,6 +10,8 @@ import zhCN from 'antd/es/locale-provider/zh_CN';
 import router from "./app/router";
 import * as projectEnv from "./env";
 
+const { Server } = require('sn-cornerstone');
+
 const env = {
     ...mainEnv,
     ...projectEnv
@@ -17,9 +19,6 @@ const env = {
 
 const projects = {
 };
-
-class UserService {
-}
 
 Page.extentions.react({
     Provider: ({ children }) => {
@@ -34,7 +33,10 @@ window.SNOWBALL_MAIN_APP = createApplication({
     extend(app) {
         return {
             env,
-            services: [UserService]
+            server: new Server({
+                baseUrl: '/server'
+            }),
+            // services: [UserService]
         };
     },
     options: {

@@ -5,14 +5,7 @@ const childProcess = require('child_process');
 
 const fsPromises = fs.promises;
 
-function createBuilder(projectPath, autoConfig) {
-    autoConfig = autoConfig.map(({ template, destFile }) => {
-        return {
-            template: path.join(projectPath, template),
-            destFile: path.join(destFile, template)
-        };
-    });
-
+function createBuilder(projectPath) {
     let logs = [];
 
     function log(...args) {
@@ -24,6 +17,10 @@ function createBuilder(projectPath, autoConfig) {
         const res = logs;
         logs = [];
         return res;
+    }
+
+    function getLogs() {
+        return logs;
     }
 
     async function doAutoConfig(autoConfig, buildFn) {
@@ -65,32 +62,82 @@ function createBuilder(projectPath, autoConfig) {
                 });
             });
         }));
-
-        console.log(config, replacements);
     }
 
+    let running = false;
+    let success;
+
     async function buildProject() {
+        if (running) return;
+        running = true;
+        success = false;
+        logs = ['start build!'];
+
+        const buildConfigJson = JSON.parse(await fsPromises.readFile(path.join(projectPath, 'build-config/config.json'), 'utf-8'));
+        const buildCommands = buildConfigJson.buildCommands;
+        const autoConfig = buildConfigJson.autoConfig.map(({ template, destFile }) => {
+            return {
+                template: path.join(projectPath, template),
+                destFile: path.join(projectPath, destFile)
+            };
+        });
+
         await doAutoConfig(projectPath, autoConfig, async () => {
             function execCommand(command, args, options) {
-                const cmd = childProcess.spawn(command, args, options);
-                cmd.stdout.on('data', (data) => {
-                    log(data.toString('utf8'));
-                });
+                return new Promise((resolve) => {
+                    const cmd = childProcess.spawn(command, args, {
+                        cwd: projectPath,
+                        ...options
+                    });
 
-                cmd.stderr.on('data', (data) => {
-                    log(data.toString('utf8'));
-                });
+                    cmd.stdout.on('data', (data) => {
+                        log(data.toString('utf8'));
+                    });
 
-                cmd.on('close', (code) => {
-                    log(`child process exited with code ${code}`);
+                    cmd.stderr.on('data', (data) => {
+                        log(data.toString('utf8'));
+                        reject();
+                    });
+
+                    cmd.on('close', (code) => {
+                        log(`exec command exited with code ${code}`);
+                        resolve();
+                    });
                 });
             }
+
+            await execCommand('git', 'pull');
+
+            for (let i = 0; i < buildCommands.length; i++) {
+                const commandArgs = buildCommands[i].join(/\s+/);
+                const command = commandArgs.shift();
+
+                await execCommand(command, commandArgs);
+            }
         });
+
+        logs = ['build finish!'];
+        running = false;
+        success = true;
     }
 
     return {
-        buildProject,
-        flushLogs
+        build: () => {
+            return buildProject()
+                .catch(e => {
+                    running = false;
+                    success = false;
+                    log(e.message);
+                });
+        },
+        flushLogs,
+        getLogs,
+        get running() {
+            return running;
+        },
+        get success() {
+            return success;
+        }
     };
 }
 
