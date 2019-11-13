@@ -10,6 +10,21 @@ class ProjectController extends Controller {
             data: projects
         };
     }
+
+    async buildProject() {
+        const { ctx } = this;
+
+        const payloadRule = {
+            projectId: { type: 'number', required: false },
+        };
+        ctx.validate(payloadRule);
+
+        await ctx.service.project.buildProject(ctx.body.projectId);
+
+        ctx.body = {
+            success: true,
+        };
+    }
 }
 
 module.exports = ProjectController;
