@@ -1,6 +1,33 @@
 const { Controller } = require("egg");
 
 class ProjectController extends Controller {
+    async getGits() {
+        const { ctx } = this;
+        const gits = await ctx.service.project.getGits();
+
+        ctx.body = {
+            success: true,
+            data: gits
+        };
+    }
+
+    async createGit() {
+        const { ctx } = this;
+        const payloadRule = {
+            name: { type: 'string', required: true },
+            gitUrl: { type: 'string', required: true },
+            rootPath: { type: 'string', required: true },
+        };
+        ctx.validate(payloadRule);
+
+        const res = await ctx.service.project.createGit(ctx.request.body);
+
+        ctx.body = {
+            success: true,
+            data: res
+        };
+    }
+
     async getProjects() {
         const { ctx } = this;
         const projects = await ctx.service.project.getProjects();

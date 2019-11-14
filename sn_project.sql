@@ -31,6 +31,15 @@ grant ALL on sn_project.* to 'dev'@'localhost';
 -- 使用数据库
 use sn_project;
 
+create table git (
+    id int(5) primary key auto_increment,
+    name varchar(50) not null,
+    gitUrl varchar(1000) not null,
+    rootPath varchar(250) not null,
+    log text,
+    status int(1) -- 发布状态: { 0: '新建', 1: '下载成功', 2: '下载中', 3: '下载失败' }
+);
+
 create table project (
     id int(5) primary key auto_increment,
     name varchar(50) not null,
@@ -42,3 +51,5 @@ create table project (
 -- alter table project add status int(1);
 
 insert into project (name,path,type,status) values ('snowball','/data/static/snowball',1,0);
+insert into project (name,path,type,status) values ('sn-project-client','/data/static/sn-project/client',1,0);
+insert into project (name,path,type,status) values ('sn-project-server','/data/static/sn-project/server',1,0);
