@@ -1,15 +1,14 @@
 import React from "react";
-import { Button } from "antd";
+import { NCMain, NCBreadcrumb, NCCard } from "nuclear";
+import ProjectList from "../components/ProjectList";
 
-export default function Home({ onButtonClick, toSignIn }) {
+export default function Home() {
     return (
-        <div>
-            Home
-            <br />
-            <br />
-            <Button onClick={onButtonClick}>Click me to `Test`!</Button>
-            <br />
-            <Button onClick={toSignIn}>Click me to `sign-in`!</Button>
-        </div>
+        <NCMain>
+            <NCBreadcrumb items={['项目管理']}></NCBreadcrumb>
+            <NCCard>
+                <ProjectList></ProjectList>
+            </NCCard>
+        </NCMain>
     );
 }

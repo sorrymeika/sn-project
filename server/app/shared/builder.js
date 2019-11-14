@@ -5,8 +5,9 @@ const childProcess = require('child_process');
 
 const fsPromises = fs.promises;
 
-function createBuilder(projectPath) {
+function createBuilder(project, app) {
     let logs = [];
+    const { id: projectId, path: projectPath } = project;
 
     function log(...args) {
         logs.push(args.join(' '));
@@ -26,14 +27,18 @@ function createBuilder(projectPath) {
     async function doAutoConfig(autoConfig, buildFn) {
         const packageJson = JSON.parse(await fsPromises.readFile(path.join(projectPath, 'package.json'), 'utf-8'));
 
+        log('start autoconfig!');
+
         const tempFileSuffix = ".snbuild.tmp";
         const config = {
             version: packageJson.version
         };
 
         const replacements = await Promise.all(autoConfig.map((conf) => {
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
                 fs.readFile(conf.template, 'utf-8', (err, text) => {
+                    if (err) return reject(err);
+
                     text = text.replace(/\${(\w+?)}/g, (match, key) => {
                         return config[key];
                     });
@@ -41,9 +46,15 @@ function createBuilder(projectPath) {
                     const tempFile = destFile + tempFileSuffix;
 
                     fs.copyFile(destFile, tempFile, (err) => {
-                        resolve({
-                            destFile,
-                            tempFile
+                        if (err) return reject(err);
+
+                        fs.writeFile(destFile, text, 'utf8', (err) => {
+                            if (err) return reject(err);
+
+                            resolve({
+                                destFile,
+                                tempFile
+                            });
                         });
                     });
                 });
@@ -52,16 +63,45 @@ function createBuilder(projectPath) {
 
         await buildFn();
 
+        log('clear temp files!');
+
         // 恢复原文件并删除临时文件
         await Promise.all(replacements.map(({ destFile, tempFile }) => {
             return new Promise((resolve, reject) => {
                 fs.copyFile(tempFile, destFile, (err) => {
+                    if (err) return reject(err);
+
                     fs.unlink(tempFile, (err) => {
+                        if (err) return reject(err);
                         resolve();
                     });
                 });
             });
         }));
+    }
+
+    function execCommand(command, args, options) {
+        return new Promise((resolve) => {
+            log(`start exec command: '${[command, ...args].join(' ')}'`);
+
+            const cmd = childProcess.spawn(command, args, {
+                cwd: projectPath,
+                ...options
+            });
+
+            cmd.stdout.on('data', (data) => {
+                log(data.toString('utf8'));
+            });
+
+            cmd.stderr.on('data', (data) => {
+                log(data.toString('utf8'));
+            });
+
+            cmd.on('close', (code) => {
+                log(`exec command '${[command, ...args].join(' ')}' exited with code ${code}`);
+                resolve();
+            });
+        });
     }
 
     let running = false;
@@ -73,61 +113,51 @@ function createBuilder(projectPath) {
         success = false;
         logs = ['start build!'];
 
+        await app.mysql.query('update project set status=2 where id=?', [projectId]);
+
+        await execCommand('git', ['pull']);
+
         const buildConfigJson = JSON.parse(await fsPromises.readFile(path.join(projectPath, 'build-config/config.json'), 'utf-8'));
+
+        log('read `build-config/config.json`!', JSON.stringify(buildConfigJson));
+
         const buildCommands = buildConfigJson.buildCommands;
         const autoConfig = buildConfigJson.autoConfig.map(({ template, destFile }) => {
             return {
-                template: path.join(projectPath, template),
+                template: path.join(projectPath, 'build-config/', template),
                 destFile: path.join(projectPath, destFile)
             };
         });
 
-        await doAutoConfig(projectPath, autoConfig, async () => {
-            function execCommand(command, args, options) {
-                return new Promise((resolve) => {
-                    const cmd = childProcess.spawn(command, args, {
-                        cwd: projectPath,
-                        ...options
-                    });
-
-                    cmd.stdout.on('data', (data) => {
-                        log(data.toString('utf8'));
-                    });
-
-                    cmd.stderr.on('data', (data) => {
-                        log(data.toString('utf8'));
-                        reject();
-                    });
-
-                    cmd.on('close', (code) => {
-                        log(`exec command exited with code ${code}`);
-                        resolve();
-                    });
-                });
-            }
-
-            await execCommand('git', 'pull');
+        await doAutoConfig(autoConfig, async () => {
+            log('exec build commands!');
 
             for (let i = 0; i < buildCommands.length; i++) {
-                const commandArgs = buildCommands[i].join(/\s+/);
+                const commandArgs = buildCommands[i].split(/\s+/);
                 const command = commandArgs.shift();
 
                 await execCommand(command, commandArgs);
             }
+
+            log('exec build commands finish!');
         });
 
-        logs = ['build finish!'];
+        log('build finish!');
         running = false;
         success = true;
+        await app.mysql.query('update project set status=1 where id=?', [projectId]);
     }
 
     return {
         build: () => {
             return buildProject()
-                .catch(e => {
+                .catch(async e => {
+                    log(e.message);
+
+                    await app.mysql.query('update project set status=3 where id=?', [projectId]);
+
                     running = false;
                     success = false;
-                    log(e.message);
                 });
         },
         flushLogs,

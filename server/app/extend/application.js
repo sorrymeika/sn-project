@@ -9,7 +9,7 @@ module.exports = {
         if (buildingProj.instance) {
             return buildingProj.instance;
         } else {
-            return buildingProj.instance = createBuilder(project.path);
+            return buildingProj.instance = createBuilder(project, this);
         }
     },
 };

@@ -19,10 +19,26 @@ class ProjectController extends Controller {
         };
         ctx.validate(payloadRule);
 
-        await ctx.service.project.buildProject(ctx.body.projectId);
+        await ctx.service.project.buildProject(ctx.request.body.projectId);
 
         ctx.body = {
             success: true,
+        };
+    }
+
+    async getBuildingInfo() {
+        const { ctx } = this;
+
+        const payloadRule = {
+            projectId: { type: 'number', required: false },
+        };
+        ctx.validate(payloadRule);
+
+        const data = await ctx.service.project.getBuildingInfo(ctx.request.body.projectId);
+
+        ctx.body = {
+            success: true,
+            data
         };
     }
 }

@@ -35,7 +35,10 @@ create table project (
     id int(5) primary key auto_increment,
     name varchar(50) not null,
     path varchar(250) not null,
-    type int(2) not null -- 项目类型: { 1: 'html', 2: 'nodejs', 3: 'java' }
+    type int(2) not null, -- 项目类型: { 1: 'html', 2: 'nodejs', 3: 'java' }
+    status int(1) -- 发布状态: { 0: 未发布, 1: '发布成功', 2: '发布中', 3: '发布失败' }
 );
 
-insert into project (name,path,type) values ('snowball','/data/static/snowball',1);
+-- alter table project add status int(1);
+
+insert into project (name,path,type,status) values ('snowball','/data/static/snowball',1,0);
