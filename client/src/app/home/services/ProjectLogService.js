@@ -32,6 +32,7 @@ export default class ProjectLogService extends Service {
             clearTimeout(this.timeout);
         }
         this.timeout = setTimeout(() => {
+            this.timeout = null;
             this.polling();
         }, 1000);
     }
@@ -39,7 +40,6 @@ export default class ProjectLogService extends Service {
     polling() {
         this.pullLogs()
             .then(() => {
-                this.timeout = null;
                 if (this.running) {
                     this.startPolling();
                 }
