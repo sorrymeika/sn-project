@@ -1,0 +1,8 @@
+{
+    "buildCommands": [
+        "npm install",
+        "npm stop",
+        "npm start"
+    ],
+    "autoConfig": []
+}

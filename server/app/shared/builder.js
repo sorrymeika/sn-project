@@ -122,7 +122,7 @@ function createBuilder(project, app) {
         log('read `build-config/config.json`!', JSON.stringify(buildConfigJson));
 
         const buildCommands = buildConfigJson.buildCommands;
-        const autoConfig = buildConfigJson.autoConfig.map(({ template, destFile }) => {
+        const autoConfig = (buildConfigJson.autoConfig || []).map(({ template, destFile }) => {
             return {
                 template: path.join(projectPath, 'build-config/', template),
                 destFile: path.join(projectPath, destFile)
