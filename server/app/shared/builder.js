@@ -29,12 +29,11 @@ function createBuilder(project, app) {
 
         log('start autoconfig!');
 
-        const tempFileSuffix = ".snbuild.tmp";
         const config = {
             version: packageJson.version
         };
 
-        const replacements = await Promise.all(autoConfig.map((conf) => {
+        await Promise.all(autoConfig.map((conf) => {
             return new Promise((resolve, reject) => {
                 fs.readFile(conf.template, 'utf-8', (err, text) => {
                     if (err) return reject(err);
@@ -43,41 +42,17 @@ function createBuilder(project, app) {
                         return config[key];
                     });
                     const destFile = conf.destFile;
-                    const tempFile = destFile + tempFileSuffix;
 
-                    fs.copyFile(destFile, tempFile, (err) => {
+                    fs.writeFile(destFile, text, 'utf8', (err) => {
                         if (err) return reject(err);
 
-                        fs.writeFile(destFile, text, 'utf8', (err) => {
-                            if (err) return reject(err);
-
-                            resolve({
-                                destFile,
-                                tempFile
-                            });
-                        });
+                        resolve();
                     });
                 });
             });
         }));
 
         await buildFn();
-
-        log('clear temp files!');
-
-        // 恢复原文件并删除临时文件
-        await Promise.all(replacements.map(({ destFile, tempFile }) => {
-            return new Promise((resolve, reject) => {
-                fs.copyFile(tempFile, destFile, (err) => {
-                    if (err) return reject(err);
-
-                    fs.unlink(tempFile, (err) => {
-                        if (err) return reject(err);
-                        resolve();
-                    });
-                });
-            });
-        }));
     }
 
     function execCommand(command, args, options) {
