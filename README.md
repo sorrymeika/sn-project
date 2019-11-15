@@ -219,12 +219,13 @@ git fetch --all
 git reset --hard origin/master
 git pull
 
-cd /data/static/sn-project/client
-npm install
-npm run build
-
 cd /data/static/sn-project/server
 npm install
 npm stop
 npm start
+
+cd /data/static/sn-project/client
+npm install
+npm run build
+
 ```

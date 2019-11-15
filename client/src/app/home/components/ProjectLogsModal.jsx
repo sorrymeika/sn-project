@@ -6,6 +6,7 @@ import { inject } from 'snowball/app';
 function ProjectLogsModal({
     visible,
     logs,
+    currentProject,
     onCancel,
     onDoPublish
 }) {
@@ -21,7 +22,7 @@ function ProjectLogsModal({
         <Modal
             ref={modalRef}
             visible={visible}
-            title={"发布日志"}
+            title={"发布日志 - " + (currentProject && currentProject.name)}
             onCancel={onCancel}
             cancelText={'取消'}
             onOk={onDoPublish}
@@ -38,6 +39,7 @@ function ProjectLogsModal({
 
 export default inject(({ projectLogService }) => {
     return {
+        currentProject: projectLogService.currentProject,
         visible: projectLogService.isModalVisible,
         logs: projectLogService.logs,
         onDoPublish: projectLogService.onDoPublish.emit,
