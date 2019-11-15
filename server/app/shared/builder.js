@@ -52,6 +52,8 @@ function createBuilder(project, app) {
             });
         }));
 
+        log('autoconfig finished!');
+
         await buildFn();
     }
 

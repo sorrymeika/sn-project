@@ -28,8 +28,8 @@
   },
   "scripts": {
     "dev": "egg-bin dev --port 7008",
-    "start": "egg-scripts start --port=7008 --daemon",
-    "stop": "egg-scripts stop",
+    "start": "egg-scripts start --port=7008 --daemon --title=egg-sn-project",
+    "stop": "egg-scripts stop --title=egg-sn-project",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
