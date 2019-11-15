@@ -116,7 +116,7 @@ function createBuilder(project, app) {
         await app.mysql.query('update project set status=2 where id=?', [projectId]);
 
         await execCommand('git', ['fetch', '--all']);
-        await execCommand('git', ['--hard', 'origin/master']);
+        await execCommand('git', ['reset', '--hard', 'origin/master']);
         await execCommand('git', ['pull']);
 
         const buildConfigJson = JSON.parse(await fsPromises.readFile(path.join(projectPath, 'build-config/config.json'), 'utf-8'));
