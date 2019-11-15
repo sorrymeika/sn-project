@@ -2,6 +2,7 @@ import React from 'react';
 import { Table, Divider } from 'antd';
 import { inject } from 'snowball/app';
 import ProjectLogsModal from './ProjectLogsModal';
+import ProjectModal from './ProjectModal';
 
 function ProjectList({
     dataSource,
@@ -66,6 +67,7 @@ function ProjectList({
                 pagination={false}
             />
             <ProjectLogsModal></ProjectLogsModal>
+            <ProjectModal />
         </>
     );
 }

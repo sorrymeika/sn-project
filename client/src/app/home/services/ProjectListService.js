@@ -8,13 +8,21 @@ export default class ProjectListService extends Service {
 
     onPublish = this.ctx.createEvent();
     onShowLog = this.ctx.createEvent();
+    onToEdit = this.ctx.createEvent();
 
-    constructor(projectService, projectLogService) {
+    constructor(projectService, projectModalService, projectLogService) {
         super();
 
         this.projectService = projectService;
+        this.projectModalService = projectModalService;
         this.projectLogService = projectLogService;
 
+        this.onToEdit((project) => {
+            this.projectModalService.show(project);
+        });
+        this.projectModalService.onSuccess(() => {
+            this.load();
+        });
         this.onShowLog((project) => {
             this.projectLogService.show(project);
         });
@@ -23,6 +31,10 @@ export default class ProjectListService extends Service {
     }
 
     init() {
+        this.load();
+    }
+
+    load() {
         this.projectService.getProjects()
             .then(res => {
                 this.projectList = res.data;

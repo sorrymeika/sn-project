@@ -2,7 +2,7 @@ import { observable } from "snowball";
 import { Service } from "snowball/app";
 import { message } from "antd";
 
-export default class GitModalService extends Service {
+export default class ProjectModalService extends Service {
     @observable isModalVisible = false;
     @observable formData = {};
 
@@ -37,10 +37,10 @@ export default class GitModalService extends Service {
 
     async submit(data) {
         if (!data.id) {
-            await this.projectService.createGit(data)
+            await this.projectService.addProject(data)
                 .then(res => {
                     message.success('创建成功');
-                    this.onSuccess.emit();
+                    this.onSuccess.emit(data);
                     this.hide();
                 })
                 .catch(e => {

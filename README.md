@@ -4,44 +4,6 @@
 
 # 新CentOS服务器搭建项目步骤
 
-## 准备安装Git
-
-Open Terminal.
-
-创建新SSH key
-```
-$ ssh-keygen -t rsa -b 4096 -C "sorrymeika@163.com"
-```
-
-```
-> Generating public/private rsa key pair.
-```
-
-直接回车，不用更改位置
-
-```
-> Enter a file in which to save the key (/Users/you/.ssh/id_rsa): [Press enter]
-```
-
-直接回车，不用设置`passphrase`
-
-```
-> Enter passphrase (empty for no passphrase): [Type a passphrase]
-> Enter same passphrase again: [Type passphrase again]
-```
-
-```
-cat ~/.ssh/id_rsa.pub
-```
-
-进入github后台添加SSH key
-
-## 安装Git、nvm和nodejs
-
-```
-./init.sh
-```
-
 ## 手动安装mysql
 
 mysql5.8版本
@@ -158,10 +120,78 @@ systemctl restart nginx.service
 systemctl status nginx.service
 ```
 
+## 准备安装Git
+
+Open Terminal.
+
+创建新SSH key
+```
+$ ssh-keygen -t rsa -b 4096 -C "sorrymeika@163.com"
+```
+
+```
+> Generating public/private rsa key pair.
+```
+
+直接回车，不用更改位置
+
+```
+> Enter a file in which to save the key (/Users/you/.ssh/id_rsa): [Press enter]
+```
+
+直接回车，不用设置`passphrase`
+
+```
+> Enter passphrase (empty for no passphrase): [Type a passphrase]
+> Enter same passphrase again: [Type passphrase again]
+```
+
+```
+cat ~/.ssh/id_rsa.pub
+```
+
+进入github后台添加SSH key
+
+## 安装Git、nvm、nodejs和pm2
+
+```sh
+#!/bin/sh
+
+#安装github
+yum install git -y
+
+#下载nvm
+git clone git@github.com:nvm-sh/nvm.git ~/nvm
+
+#设置nvm 自动运行;
+echo "source ~/nvm/nvm.sh" >> ~/.bashrc
+source ~/.bashrc
+
+#查询node版本
+nvm list-remote
+
+#安装node.js
+nvm install v12.13.0
+
+#使用nodejs
+nvm use v12.13.0
+
+#安装gcc和g++
+yum -y install gcc gcc-c++
+
+#安装pm2
+npm install pm2 -g
+```
+
 ## 从github克隆项目
 
 ```sh
 #!/bin/sh
+
+mkdir /data/common
+cd /data/common
+git clone git@github.com:sorrymeika/sonofs.git
+git clone git@github.com:sorrymeika/sonorpc.git
 
 mkdir /data/static
 cd /data/static
@@ -169,4 +199,5 @@ git clone git@github.com:sorrymeika/snowball.git
 git clone git@github.com:sorrymeika/nuclear.git
 git clone git@github.com:sorrymeika/sn-cornerstore.git
 git clone git@github.com:sorrymeika/sn-project.git
+
 ```

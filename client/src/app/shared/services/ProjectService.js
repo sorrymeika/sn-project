@@ -13,6 +13,16 @@ export default class ProjectService extends Service {
         return this.app.server.post('/project/getProjects');
     }
 
+    addProject(data) {
+        return this.app.server.post('/project/addProject', data);
+    }
+
+    deleteProject(projectId) {
+        return this.app.server.post('/project/deleteProject', {
+            projectId
+        });
+    }
+
     buildProject(projectId) {
         return this.app.server.post('/project/buildProject', {
             projectId

@@ -20,12 +20,19 @@ class ProjectController extends Controller {
         };
         ctx.validate(payloadRule);
 
-        const res = await ctx.service.project.createGit(ctx.request.body);
-
-        ctx.body = {
-            success: true,
-            data: res
-        };
+        try {
+            const res = await ctx.service.project.createGit(ctx.request.body);
+            ctx.body = {
+                success: true,
+                data: res
+            };
+        } catch (error) {
+            ctx.body = {
+                success: false,
+                message: error.message,
+                stack: error.stack
+            };
+        }
     }
 
     async getProjects() {
@@ -35,6 +42,45 @@ class ProjectController extends Controller {
         ctx.body = {
             success: true,
             data: projects
+        };
+    }
+
+    async addProject() {
+        const { ctx } = this;
+        const payloadRule = {
+            name: { type: 'string', required: true },
+            path: { type: 'string', required: true },
+            type: { type: 'number', required: true },
+        };
+        ctx.validate(payloadRule);
+
+        try {
+            const res = await ctx.service.project.addProject(ctx.request.body);
+            ctx.body = {
+                success: true,
+                data: res
+            };
+        } catch (error) {
+            ctx.body = {
+                success: false,
+                message: error.message,
+                stack: error.stack
+            };
+        }
+    }
+
+    async deleteProject() {
+        const { ctx } = this;
+
+        const payloadRule = {
+            projectId: { type: 'number', required: false },
+        };
+        ctx.validate(payloadRule);
+
+        await ctx.service.project.deleteProject(ctx.request.body.projectId);
+
+        ctx.body = {
+            success: true,
         };
     }
 

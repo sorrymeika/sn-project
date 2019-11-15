@@ -5,12 +5,16 @@ import { NCMain, NCBreadcrumb, NCCard, NCToolbar } from "nuclear";
 import ProjectList from "../components/ProjectList";
 import { inject } from "snowball/app";
 
-function Home({ onToGit }) {
+function Home({ onToGit, onToEdit }) {
     return (
         <NCMain>
             <NCBreadcrumb items={['项目管理']}></NCBreadcrumb>
             <NCCard>
                 <NCToolbar>
+                    <Button
+                        className="mr_l"
+                        onClick={() => onToEdit()}
+                    >新增项目</Button>
                     <Button
                         className="mr_l"
                         onClick={onToGit}
@@ -22,8 +26,9 @@ function Home({ onToGit }) {
     );
 }
 
-export default inject(({ homeService }) => {
+export default inject(({ homeService, projectListService }) => {
     return {
-        onToGit: homeService.onToGit.emit
+        onToGit: homeService.onToGit.emit,
+        onToEdit: projectListService.onToEdit.emit
     };
 })(Home);

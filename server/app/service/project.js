@@ -22,6 +22,10 @@ class ProjectService extends Service {
         gitUrl,
         rootPath
     }) {
+        if (!rootPath.startsWith('/data/') && rootPath != '/data') {
+            throw new Error('父目录的根目录必须为`/data`!');
+        }
+
         const { app } = this;
         const exists = await app.mysql.query('select id from git where gitUrl=? limit 1', [gitUrl]);
         if (exists && exists[0]) {
@@ -57,6 +61,29 @@ class ProjectService extends Service {
     async getProjects() {
         const rows = await this.app.mysql.query('select id,name,path,type,status from project');
         return rows;
+    }
+
+    async addProject({
+        name,
+        path,
+        type
+    }) {
+        if (!path.startsWith('/data')) {
+            throw new Error('项目需在`/data`或其子文件夹下!');
+        }
+
+        const res = await this.app.mysql.insert('project', {
+            name,
+            path,
+            type,
+            status: 0
+        });
+        return res;
+    }
+
+    async deleteProject(projectId) {
+        const res = await this.app.mysql.query('delete from project where id=?', [projectId]);
+        return res;
     }
 
     async buildProject(projectId) {
