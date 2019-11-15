@@ -19,6 +19,19 @@ function ProjectList({
         dataIndex: 'path',
         title: '项目路径'
     }, {
+        dataIndex: 'type',
+        title: '应用类型',
+        width: 120,
+        render(type, row) {
+            return row.type == 1
+                ? 'html'
+                : row.type == 2
+                    ? 'nodejs'
+                    : row.type == 3
+                        ? 'java'
+                        : row.type;
+        }
+    }, {
         dataIndex: 'status',
         title: '状态',
         width: 120,
