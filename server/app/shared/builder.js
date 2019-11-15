@@ -86,6 +86,7 @@ function createBuilder(project, app) {
 
             const cmd = childProcess.spawn(command, args, {
                 cwd: projectPath,
+                shell: true,
                 ...options
             });
 
