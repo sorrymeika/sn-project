@@ -181,18 +181,17 @@ yum -y install gcc gcc-c++
 
 #安装pm2
 npm install pm2 -g
+
+#pm2自启
+pm2 startup
+systemctl enable pm2-root
+
 ```
 
-## 从github克隆项目
+## 启动CI项目
 
 ```sh
 #!/bin/sh
-
-mkdir /data/common
-cd /data/common
-git clone git@github.com:sorrymeika/sonofs.git
-git clone git@github.com:sorrymeika/sonorpc.git
-
 mkdir /data/static
 cd /data/static
 git clone git@github.com:sorrymeika/snowball.git
@@ -200,4 +199,32 @@ git clone git@github.com:sorrymeika/nuclear.git
 git clone git@github.com:sorrymeika/sn-cornerstore.git
 git clone git@github.com:sorrymeika/sn-project.git
 
+cd /data/static/snowball
+git fetch --all
+git reset --hard origin/master
+git pull
+
+cd /data/static/nuclear
+git fetch --all
+git reset --hard origin/master
+git pull
+
+cd /data/static/sn-cornerstore
+git fetch --all
+git reset --hard origin/master
+git pull
+
+cd /data/static/sn-project
+git fetch --all
+git reset --hard origin/master
+git pull
+
+cd /data/static/sn-project/client
+npm install
+npm run build
+
+cd /data/static/sn-project/server
+npm install
+npm stop
+npm start
 ```

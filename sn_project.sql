@@ -31,25 +31,53 @@ grant ALL on sn_project.* to 'dev'@'localhost';
 -- 使用数据库
 use sn_project;
 
-create table git (
-    id int(5) primary key auto_increment,
-    name varchar(50) not null,
-    gitUrl varchar(1000) not null,
-    rootPath varchar(250) not null,
-    log text,
-    status int(1) -- 发布状态: { 0: '新建', 1: '下载成功', 2: '下载中', 3: '下载失败' }
-);
-
 create table project (
     id int(5) primary key auto_increment,
     name varchar(50) not null,
-    path varchar(250) not null,
-    type int(2) not null, -- 项目类型: { 1: 'html', 2: 'nodejs', 3: 'java' }
-    status int(1) -- 发布状态: { 0: 未发布, 1: '发布成功', 2: '发布中', 3: '发布失败' }
+    gitUrl varchar(1000) not null,
+    type int(2) not null, -- 应用类型: { 1: 'html', 2: 'nodejs framework', 3: 'service', 4: 'egg' }
+    status int(1), -- 发布状态: { 0: 未发布, 1: '发布成功', 2: '发布中', 3: '发布失败' }
+    updateDt timestamp,
+    log text
 );
 
--- alter table project add status int(1);
+alter table project add UNIQUE nameIndex (name);
 
-insert into project (name,path,type,status) values ('snowball','/data/static/snowball',1,0);
-insert into project (name,path,type,status) values ('sn-project-client','/data/static/sn-project/client',1,0);
-insert into project (name,path,type,status) values ('sn-project-server','/data/static/sn-project/server',1,0);
+-- html
+insert into project (name,gitUrl,type,status) values ('snowball','git@github.com:sorrymeika/snowball.git',1,0);
+insert into project (name,gitUrl,type,status) values ('sn-cornerstore','git@github.com:sorrymeika/sn-cornerstore.git',1,0);
+insert into project (name,gitUrl,type,status) values ('sn-app','git@github.com:sorrymeika/sn-app.git',1,0);
+insert into project (name,gitUrl,type,status) values ('sn-project','git@github.com:sorrymeika/sn-project.git',1,0);
+insert into project (name,gitUrl,type,status) values ('nuclear','git@github.com:sorrymeika/nuclear.git',1,0);
+insert into project (name,gitUrl,type,status) values ('sn-pyramid','git@github.com:sorrymeika/sn-pyramid.git',1,0);
+insert into project (name,gitUrl,type,status) values ('sn-trade-mngr','git@github.com:sorrymeika/sn-trade-mngr.git',1,0);
+insert into project (name,gitUrl,type,status) values ('sn-seller-mngr','git@github.com:sorrymeika/sn-seller-mngr.git',1,0);
+insert into project (name,gitUrl,type,status) values ('sn-admin','git@github.com:sorrymeika/sn-admin.git',1,0);
+insert into project (name,gitUrl,type,status) values ('juicy','git@github.com:sorrymeika/juicy.git',1,0);
+insert into project (name,gitUrl,type,status) values ('nuclear','git@github.com:sorrymeika/nuclear.git',1,0);
+
+-- nodejs 框架
+insert into project (name,gitUrl,type,status) values ('sonofs','git@github.com:sorrymeika/sonofs.git',2,0);
+insert into project (name,gitUrl,type,status) values ('sonorpc','git@github.com:sorrymeika/sonorpc.git',2,0);
+insert into project (name,gitUrl,type,status) values ('sonorpc-mysql','git@github.com:sorrymeika/sonorpc-mysql.git',2,0);
+insert into project (name,gitUrl,type,status) values ('egg-sn-gateway','git@github.com:sorrymeika/egg-sn-gateway.git',2,0);
+insert into project (name,gitUrl,type,status) values ('sn-rpc-scripts','git@github.com:sorrymeika/sn-rpc-scripts.git',2,0);
+insert into project (name,gitUrl,type,status) values ('sn-sfs-scripts','git@github.com:sorrymeika/sn-sfs-scripts.git',2,0);
+
+-- service
+insert into project (name,gitUrl,type,status) values ('sn-auth','git@github.com:sorrymeika/sn-auth.git',3,0);
+insert into project (name,gitUrl,type,status) values ('sn-base-serv','git@github.com:sorrymeika/sn-base-serv.git',3,0);
+insert into project (name,gitUrl,type,status) values ('sn-market-serv','git@github.com:sorrymeika/sn-market-ser.git',3,0);
+insert into project (name,gitUrl,type,status) values ('sn-product-serv','git@github.com:sorrymeika/sn-product-serv.git',3,0);
+insert into project (name,gitUrl,type,status) values ('sn-seller-serv','git@github.com:sorrymeika/sn-seller-serv.git',3,0);
+insert into project (name,gitUrl,type,status) values ('sn-trade-serv','git@github.com:sorrymeika/sn-trade-serv.git',3,0);
+insert into project (name,gitUrl,type,status) values ('sn-user-serv','git@github.com:sorrymeika/sn-user-serv.git',3,0);
+
+-- eggjs web
+insert into project (name,gitUrl,type,status) values ('sn-auth-web','git@github.com:sorrymeika/sn-auth-web.git',4,0);
+insert into project (name,gitUrl,type,status) values ('sn-base-web','git@github.com:sorrymeika/sn-base-web.git',4,0);
+insert into project (name,gitUrl,type,status) values ('sn-file-web','git@github.com:sorrymeika/sn-file-web.git',4,0);
+insert into project (name,gitUrl,type,status) values ('sn-market-web','git@github.com:sorrymeika/sn-market-web.git',4,0);
+insert into project (name,gitUrl,type,status) values ('sn-seller-web','git@github.com:sorrymeika/sn-seller-web.git',4,0);
+insert into project (name,gitUrl,type,status) values ('sn-trade-web','git@github.com:sorrymeika/sn-trade-web.git',4,0);
+insert into project (name,gitUrl,type,status) values ('sn-user-web','git@github.com:sorrymeika/sn-user-web.git',4,0);

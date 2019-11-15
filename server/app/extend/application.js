@@ -1,16 +1,21 @@
 const { createBuilder } = require('../shared/builder');
+const { getProjectPath } = require('../shared/util');
+
 const BUILDER = Symbol('Application#builder');
 const childProcess = require('child_process');
 
 module.exports = {
     getBuilder(project) {
         const builder = this[BUILDER] || (this[BUILDER] = {});
-        const buildingProj = builder[project.path] || (builder[project.path] = {});
+        const buildingProj = builder[project.id] || (builder[project.id] = {});
 
         if (buildingProj.instance) {
             return buildingProj.instance;
         } else {
-            return buildingProj.instance = createBuilder(project, this);
+            return buildingProj.instance = createBuilder({
+                ...project,
+                path: getProjectPath(project.name, project.type)
+            }, this);
         }
     },
 

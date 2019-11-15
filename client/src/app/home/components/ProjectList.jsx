@@ -16,8 +16,8 @@ function ProjectList({
         dataIndex: 'name',
         title: '项目名称'
     }, {
-        dataIndex: 'path',
-        title: '项目路径'
+        dataIndex: 'gitUrl',
+        title: 'GIT地址'
     }, {
         dataIndex: 'type',
         title: '应用类型',
@@ -26,10 +26,12 @@ function ProjectList({
             return row.type == 1
                 ? 'html'
                 : row.type == 2
-                    ? 'nodejs'
+                    ? 'nodejs framework'
                     : row.type == 3
-                        ? 'java'
-                        : row.type;
+                        ? 'service'
+                        : row.type == 4
+                            ? 'eggjs web'
+                            : row.type;
         }
     }, {
         dataIndex: 'status',

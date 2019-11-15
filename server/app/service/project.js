@@ -1,4 +1,5 @@
 const { Service } = require("egg");
+const { getProjectPath } = require("../shared/util");
 
 class ProjectNotExistsError extends Error {
     constructor(message) {
@@ -12,72 +13,40 @@ class ProjectNotExistsError extends Error {
 }
 
 class ProjectService extends Service {
-    async getGits() {
-        const rows = await this.app.mysql.query('select id,name,gitUrl,rootPath,status from git order by rootPath asc,name asc');
-        return rows;
-    }
-
-    async createGit({
-        name,
-        gitUrl,
-        rootPath
-    }) {
-        if (!rootPath.startsWith('/data/') && rootPath != '/data') {
-            throw new Error('父目录的根目录必须为`/data`!');
-        }
-
-        const { app } = this;
-        const exists = await app.mysql.query('select id from git where gitUrl=? limit 1', [gitUrl]);
-        if (exists && exists[0]) {
-            throw new Error('git库已存在！');
-        }
-
-        const res = await app.mysql.insert('git', {
-            name,
-            gitUrl,
-            rootPath,
-            status: 2
-        });
-
-        const gitId = res.insertId;
-
-        const progress = (e) => {
-            app.mysql.query('update git set log=concat_ws(\'\',log,?) where id=?', [e.data + "\n", gitId]);
-        };
-
-        app.execCommand('git', ['clone', gitUrl], {
-            cwd: rootPath
-        }, progress)
-            .then(() => {
-                app.mysql.query('update git set status=1 where id=?', [gitId]);
-            })
-            .catch(() => {
-                app.mysql.query('update git set status=3 where id=?', [gitId]);
-            });
-
-        return res;
-    }
-
     async getProjects() {
-        const rows = await this.app.mysql.query('select id,name,path,type,status from project order by path asc,name asc');
+        const rows = await this.app.mysql.query('select id,name,gitUrl,type,status,updateDt from project order by type asc,name asc');
         return rows;
     }
 
     async addProject({
         name,
-        path,
+        gitUrl,
         type
     }) {
-        if (!path.startsWith('/data')) {
-            throw new Error('项目需在`/data`或其子文件夹下!');
+        const { app } = this;
+
+        const exists = await app.mysql.query('select id from project where gitUrl=? limit 1', [gitUrl]);
+        if (exists && exists[0]) {
+            throw new Error('git库已存在！');
         }
 
-        const res = await this.app.mysql.insert('project', {
+        const res = await app.mysql.insert('project', {
             name,
-            path,
+            gitUrl,
             type,
             status: 0
         });
+
+        const gitId = res.insertId;
+
+        const progress = (e) => {
+            app.mysql.query('update project set log=concat_ws(\'\',log,?) where id=?', [e.data + "\n", gitId]);
+        };
+
+        app.execCommand('git', ['clone', gitUrl], {
+            cwd: getProjectPath(name, type)
+        }, progress);
+
         return res;
     }
 
@@ -87,7 +56,7 @@ class ProjectService extends Service {
     }
 
     async buildProject(projectId) {
-        const rows = await this.app.mysql.query('select id,name,path,type from project where id=?', [projectId]);
+        const rows = await this.app.mysql.query('select id,name,gitUrl,type from project where id=?', [projectId]);
         if (!rows.length) throw new ProjectNotExistsError();
 
         const project = rows[0];
@@ -99,7 +68,7 @@ class ProjectService extends Service {
     }
 
     async getBuildingInfo(projectId) {
-        const rows = await this.app.mysql.query('select id,name,path,type from project where id=?', [projectId]);
+        const rows = await this.app.mysql.query('select id,name,gitUrl,type from project where id=?', [projectId]);
         if (!rows.length) throw new ProjectNotExistsError();
 
         const project = rows[0];

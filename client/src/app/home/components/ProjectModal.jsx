@@ -7,11 +7,14 @@ const PROJECT_TYPES = [{
     label: 'html',
     value: 1
 }, {
-    label: 'nodejs',
+    label: 'nodejs framework',
     value: 2
 }, {
-    label: 'java',
+    label: 'service',
     value: 3
+}, {
+    label: 'nodejs web',
+    value: 4
 }];
 
 function ProjectModal({
@@ -52,14 +55,6 @@ function ProjectModal({
                 </NCFormItem>
                 <NCFormItem
                     labelSpan={4}
-                    label="项目目录"
-                    field="path"
-                    rules={[{ required: true, message: '必须填写项目目录' }]}
-                >
-                    <Input />
-                </NCFormItem>
-                <NCFormItem
-                    labelSpan={4}
                     label="类型"
                     field="type"
                     rules={[{ required: true, message: '必须选择类型' }]}
@@ -72,6 +67,14 @@ function ProjectModal({
                             })
                         }
                     </Select>
+                </NCFormItem>
+                <NCFormItem
+                    labelSpan={4}
+                    label="GIT地址"
+                    field="gitUrl"
+                    rules={[{ required: true, message: '必须填写GIT地址' }]}
+                >
+                    <Input />
                 </NCFormItem>
             </NCForm>
         </Modal>

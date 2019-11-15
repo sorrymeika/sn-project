@@ -7,7 +7,7 @@ const fsPromises = fs.promises;
 
 function createBuilder(project, app) {
     let logs = [];
-    const { id: projectId, path: projectPath } = project;
+    const { id: projectId, path: projectPath, gitUrl } = project;
 
     function log(...args) {
         logs.push(args.join(' '));
@@ -112,9 +112,15 @@ function createBuilder(project, app) {
         if (running) return;
         running = true;
         success = false;
-        logs = ['start build!'];
+        logs = ['start build!', JSON.stringify(project)];
 
         await app.mysql.query('update project set status=2 where id=?', [projectId]);
+
+        await execCommand('git', ['clone', gitUrl], {
+            cwd: projectPath
+                .replace(/[/]$/, '')
+                .replace(/[^/]+$/, '')
+        });
 
         await execCommand('git', ['fetch', '--all']);
         await execCommand('git', ['reset', '--hard', 'origin/master']);
@@ -136,10 +142,15 @@ function createBuilder(project, app) {
             log('exec build commands!');
 
             for (let i = 0; i < buildCommands.length; i++) {
-                const commandArgs = buildCommands[i].split(/\s+/);
+                const [commandString, options] = Array.isArray(buildCommands[i]) ? buildCommands[i] : [buildCommands[i], {}];
+                const commandArgs = commandString.split(/\s+/);
                 const command = commandArgs.shift();
 
-                await execCommand(command, commandArgs);
+                if (options.cwd) {
+                    options.cwd = path.join(projectPath, options.cwd);
+                }
+
+                await execCommand(command, commandArgs, options);
             }
 
             log('exec build commands finish!');
