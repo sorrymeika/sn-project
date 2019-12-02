@@ -387,26 +387,26 @@ npm run build
 
 ```sh
 cd /data/static/sn-project/server
-npm start
+npm stop && npm start
 
 cd /data/web/sn-auth-web
-npm start
+npm stop && npm start
 
 cd /data/web/sn-base-web
-npm start
+npm stop && npm start
 
 cd /data/web/sn-file-web
-npm start
+npm stop && npm start
 
 cd /data/web/sn-market-web
-npm start
+npm stop && npm start
 
 cd /data/web/sn-seller-web
-npm start
+npm stop && npm start
 
 cd /data/web/sn-trade-web
-npm start
+npm stop && npm start
 
 cd /data/web/sn-user-web
-npm start
+npm stop && npm start
 ```

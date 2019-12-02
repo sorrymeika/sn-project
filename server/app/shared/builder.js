@@ -25,34 +25,36 @@ function createBuilder(project, app) {
     }
 
     async function doAutoConfig(autoConfig, buildFn) {
-        const packageJson = JSON.parse(await fsPromises.readFile(path.join(projectPath, 'package.json'), 'utf-8'));
+        if (autoConfig && autoConfig.length) {
+            const packageJson = JSON.parse(await fsPromises.readFile(path.join(projectPath, 'package.json'), 'utf-8'));
 
-        log('start autoconfig!');
+            log('start autoconfig!');
 
-        const config = {
-            version: packageJson.version
-        };
+            const config = {
+                version: packageJson.version
+            };
 
-        await Promise.all(autoConfig.map((conf) => {
-            return new Promise((resolve, reject) => {
-                fs.readFile(conf.template, 'utf-8', (err, text) => {
-                    if (err) return reject(err);
-
-                    text = text.replace(/\${(\w+?)}/g, (match, key) => {
-                        return config[key];
-                    });
-                    const destFile = conf.destFile;
-
-                    fs.writeFile(destFile, text, 'utf8', (err) => {
+            await Promise.all(autoConfig.map((conf) => {
+                return new Promise((resolve, reject) => {
+                    fs.readFile(conf.template, 'utf-8', (err, text) => {
                         if (err) return reject(err);
 
-                        resolve();
+                        text = text.replace(/\${(\w+?)}/g, (match, key) => {
+                            return config[key];
+                        });
+                        const destFile = conf.destFile;
+
+                        fs.writeFile(destFile, text, 'utf8', (err) => {
+                            if (err) return reject(err);
+
+                            resolve();
+                        });
                     });
                 });
-            });
-        }));
+            }));
 
-        log('autoconfig finished!');
+            log('autoconfig finished!');
+        }
 
         await buildFn();
     }
