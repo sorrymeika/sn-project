@@ -49,7 +49,7 @@ class ProjectController extends Controller {
         const { ctx } = this;
         const payloadRule = {
             name: { type: 'string', required: true },
-            path: { type: 'string', required: true },
+            gitUrl: { type: 'string', required: true },
             type: { type: 'number', required: true },
         };
         ctx.validate(payloadRule);

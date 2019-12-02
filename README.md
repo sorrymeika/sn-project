@@ -51,6 +51,9 @@ When prompted to accept the GPG key, verify that the fingerprint matches 573B FD
 ```
 vi /etc/nginx/nginx.conf
 vi /etc/nginx/conf.d/default.conf
+vi /etc/nginx/conf.d/project.conf
+vi /etc/nginx/conf.d/www.conf
+vi /etc/nginx/conf.d/sfs.conf
 ```
 
 全局配置`/etc/nginx/nginx.conf`
@@ -92,6 +95,154 @@ http {
     #gzip_disable "MSIE [1-6]\.";
 
     include /etc/nginx/conf.d/*.conf;
+}
+```
+
+
+#### vi /etc/nginx/conf.d/www.conf
+
+```conf
+server {
+    listen       80;
+    server_name  www.big1024.com;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+   
+    location /mall {
+        alias   /data/static/juicy/build;
+        index  index.html index.htm;
+    }
+
+    location /download {
+        alias   /data/static/download;
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+```
+
+
+
+#### vi /etc/nginx/conf.d/admin.conf
+
+```conf
+server {
+    listen       80;
+    server_name  admin.big1024.com;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+   
+    location / {
+        root   /data/static/sn-admin/build;
+        index  index.html index.htm;
+    }
+
+    location /pyramid {
+        alias   /data/static/sn-pyramid/build;
+        index  index.html index.htm;
+    }
+
+    location /trade {
+        alias   /data/static/sn-trade-mngr/build;
+        index  index.html index.htm;
+    }
+
+    location /seller {
+        alias   /data/static/sn-seller-mngr/build;
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+```
+
+#### vi /etc/nginx/conf.d/api.conf
+
+
+```conf
+server {
+    listen       80;
+    server_name  api.big1024.com;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location /auth_server/  {
+        proxy_pass   http://127.0.0.1:7001/;
+    }
+
+    location /market_server/  {
+        proxy_pass   http://127.0.0.1:7002/;
+    }
+
+    location /trade_server/  {
+        proxy_pass   http://127.0.0.1:7003/;
+    }
+
+    location /seller_server/  {
+        proxy_pass   http://127.0.0.1:7005/;
+    }
+   
+    location /user_server/  {
+        proxy_pass   http://127.0.0.1:7006/;
+    }
+
+    location /base_server/  {
+        proxy_pass   http://127.0.0.1:7007/;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+```
+
+
+#### vi /etc/nginx/conf.d/sfs.conf
+
+
+```conf
+server {
+    listen       80;
+    server_name  sfs.big1024.com;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location /  {
+        proxy_pass   http://127.0.0.1:7004/;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
 }
 ```
 
@@ -228,4 +379,34 @@ cd /data/static/sn-project/client
 npm install
 npm run build
 
+```
+
+
+
+## 启动egg项目
+
+```sh
+cd /data/static/sn-project/server
+npm start
+
+cd /data/web/sn-auth-web
+npm start
+
+cd /data/web/sn-base-web
+npm start
+
+cd /data/web/sn-file-web
+npm start
+
+cd /data/web/sn-market-web
+npm start
+
+cd /data/web/sn-seller-web
+npm start
+
+cd /data/web/sn-trade-web
+npm start
+
+cd /data/web/sn-user-web
+npm start
 ```

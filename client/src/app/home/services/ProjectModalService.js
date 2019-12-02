@@ -44,7 +44,7 @@ export default class ProjectModalService extends Service {
                     this.hide();
                 })
                 .catch(e => {
-                    message.success('创建失败');
+                    message.error('创建失败');
                 });
         } else {
             console.log(data);

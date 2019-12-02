@@ -61,6 +61,7 @@ insert into project (name,gitUrl,type,status) values ('sonofs','git@github.com:s
 insert into project (name,gitUrl,type,status) values ('sonorpc','git@github.com:sorrymeika/sonorpc.git',2,0);
 insert into project (name,gitUrl,type,status) values ('sonorpc-mysql','git@github.com:sorrymeika/sonorpc-mysql.git',2,0);
 insert into project (name,gitUrl,type,status) values ('egg-sn-gateway','git@github.com:sorrymeika/egg-sn-gateway.git',2,0);
+insert into project (name,gitUrl,type,status) values ('egg-sn-auth','git@github.com:sorrymeika/egg-sn-auth.git',2,0);
 insert into project (name,gitUrl,type,status) values ('sn-rpc-scripts','git@github.com:sorrymeika/sn-rpc-scripts.git',2,0);
 insert into project (name,gitUrl,type,status) values ('sn-sfs-scripts','git@github.com:sorrymeika/sn-sfs-scripts.git',2,0);
 
