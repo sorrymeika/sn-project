@@ -2,7 +2,7 @@
 项目发布管理
 
 
-# 新CentOS服务器搭建项目步骤
+# 新CentOS 7服务器搭建项目步骤
 
 ## 手动安装mysql
 
@@ -93,6 +93,9 @@ http {
     gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript text/html application/x-httpd-php application/json;
     gzip_vary off;
     #gzip_disable "MSIE [1-6]\.";
+
+    #上传文件的大小限制  默认1m
+    client_max_body_size 8m;
 
     include /etc/nginx/conf.d/*.conf;
 }
@@ -246,6 +249,91 @@ server {
 }
 ```
 
+
+#### vi /etc/nginx/conf.d/project.conf
+
+```conf
+server {
+    listen       80;
+    server_name  project.big1024.com;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /data/static/sn-project/client/build;
+        index  index.html index.htm;
+    }
+
+    location /server/  {
+        proxy_pass   http://127.0.0.1:7008/;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+```
+
+
+#### vi /etc/nginx/conf.d/newyear.conf
+
+```conf
+server {
+    listen       80;
+    server_name  newyear.big1024.com;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /data/static/newyear/client/build;
+        index  index.html index.htm;
+    }
+
+    location /server/  {
+        proxy_pass   http://127.0.0.1:7009/;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+```
+
 ### 负载均衡
 
 ```conf
@@ -378,7 +466,6 @@ npm start
 cd /data/static/sn-project/client
 npm install
 npm run build
-
 ```
 
 
@@ -410,3 +497,57 @@ npm stop && npm start
 cd /data/web/sn-user-web
 npm stop && npm start
 ```
+
+## 启动newyear
+
+```sh
+#!/bin/sh
+cd /data/static/newyear/server
+git fetch --all
+git reset --hard origin/master
+git pull
+npm stop && npm start
+```
+
+## 启动serv
+
+```sh
+cd /data/common/sn-sfs-scripts
+node scripts/slave.js
+```
+
+# port
+
+## 前台前端
+* juicy: 10100
+
+## 后台前端
+* sn-admin: 10020
+* sn-pyramid: 10021
+* sn-trade-mngr: 10022
+* sn-seller-mngr: 10023
+* sn-project-client: 10024
+
+## web服务端
+* sn-auth-web: 7001
+* sn-market-web: 7002
+* sn-trade-web: 7003
+* sn-file-web: 7004
+* sn-seller-web: 7005
+* sn-user-web: 7006
+* sn-base-web: 7007
+* sn-project-server: 7008
+* sn-project-admin: 7010
+* newyear: 7009
+
+## rpc服务提供者
+* registry: 3006
+* sn-auth: 3005
+* sn-market-serv: 3007
+* sn-product-serv: 3008
+* sn-trade-serv: 3009
+* sn-stock-serv: 3010
+* sn-seller-serv: 3011
+* sn-user-serv: 3012
+* sn-base-serv: 3013
+* sn-stock-serv: 3014

@@ -31,12 +31,18 @@ grant ALL on sn_project.* to 'dev'@'localhost';
 -- 使用数据库
 use sn_project;
 
+create table user (
+    id int(11) primary key auto_increment,
+    account varchar(30) not null,
+    name varchar(30) not null,
+);
+
 create table project (
-    id int(5) primary key auto_increment,
+    id int(11) primary key auto_increment,
     name varchar(50) not null,
     gitUrl varchar(1000) not null,
-    type int(2) not null, -- 应用类型: { 1: 'html', 2: 'nodejs framework', 3: 'service', 4: 'egg' }
-    status int(1), -- 发布状态: { 0: 未发布, 1: '发布成功', 2: '发布中', 3: '发布失败' }
+    type tinyint(4) not null, -- 应用类型: { 1: 'html', 2: 'nodejs framework', 3: 'service', 4: 'egg' }
+    status tinyint(4), -- 发布状态: { 0: 未发布, 1: '发布成功', 2: '发布中', 3: '发布失败' }
     updateDt timestamp,
     log text
 );

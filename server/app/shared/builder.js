@@ -7,7 +7,7 @@ const fsPromises = fs.promises;
 
 function createBuilder(project, app) {
     let logs = [];
-    const { id: projectId, path: projectPath, gitUrl } = project;
+    const { id: projectId, path: projectPath, gitUrl, name: projectName } = project;
 
     function log(...args) {
         logs.push(args.join(' '));
@@ -144,6 +144,22 @@ function createBuilder(project, app) {
     return {
         build: () => {
             return buildProject()
+                .then(() => {
+                    if (projectName == 'sn-project') {
+                        var http = require('http');
+                        return new Promise((resolve, reject) => {
+                            http.request({
+                                hostname: 'localhost',
+                                port: 7010,
+                                path: '/restart',
+                                method: 'POST',
+                            }, (err, result) => {
+                                console.log(err, result);
+                                err ? reject(err) : resolve();
+                            });
+                        });
+                    }
+                })
                 .catch(async e => {
                     log(e.message);
 

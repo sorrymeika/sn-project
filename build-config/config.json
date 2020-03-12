@@ -23,6 +23,24 @@
             {
                 "cwd": "./server"
             }
+        ],
+        [
+            "npm install",
+            {
+                "cwd": "./admin"
+            }
+        ],
+        [
+            "npm stop",
+            {
+                "cwd": "./admin"
+            }
+        ],
+        [
+            "npm start",
+            {
+                "cwd": "./admin"
+            }
         ]
     ],
     "autoConfig": []
