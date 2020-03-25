@@ -3,7 +3,7 @@ import { Button } from "antd";
 import { NCMain, NCBreadcrumb, NCCard, NCToolbar } from "nuclear";
 
 import ProjectList from "../components/ProjectList";
-import { inject } from "snowball/app";
+import { inject, autowired } from "snowball/app";
 
 function Home({ onToEdit }) {
     return (
@@ -22,8 +22,9 @@ function Home({ onToEdit }) {
     );
 }
 
-export default inject(({ projectListService }) => {
+export default inject(() => {
+    const projectListViewModel = autowired('projectListViewModel');
     return {
-        onToEdit: projectListService.onToEdit.emit
+        onToEdit: projectListViewModel.onToEdit
     };
 })(Home);

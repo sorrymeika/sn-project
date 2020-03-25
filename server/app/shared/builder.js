@@ -147,15 +147,18 @@ function createBuilder(project, app) {
                 .then(() => {
                     if (projectName == 'sn-project') {
                         var http = require('http');
-                        return new Promise((resolve, reject) => {
+                        return new Promise((resolve) => {
                             http.request({
                                 hostname: 'localhost',
                                 port: 7010,
                                 path: '/restart',
                                 method: 'POST',
-                            }, (err, result) => {
-                                console.log(err, result);
-                                err ? reject(err) : resolve();
+                            }, (res) => {
+                                res.setEncoding('utf8');
+                                res.on('data', (chunk) => {
+                                    console.log(`BODY: ${chunk}`);
+                                });
+                                res.on('end', resolve);
                             });
                         });
                     }

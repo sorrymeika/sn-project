@@ -1,30 +1,27 @@
 import { observable } from "snowball";
-import { Service } from "snowball/app";
+import { emitter, autowired, ViewModel } from "snowball/app";
 
-export default class ProjectLogService extends Service {
+export default class ProjectLogViewModel extends ViewModel {
     @observable isModalVisible = false;
     @observable logs = [];
     @observable running = false;
     @observable success = false;
     @observable currentProject;
 
-    onCancel = this.ctx.createEvent();
-    onDoPublish = this.ctx.createEvent();
-    onDidPublish = this.ctx.createEvent();
+    onDidPublish = this.ctx.createEmitter();
 
-    constructor(projectService) {
-        super();
+    @autowired
+    projectApiService;
 
-        this.projectService = projectService;
+    @emitter
+    onCancel() {
+        this.hide();
+    }
 
-        this.onCancel(() => {
-            this.hide();
-        });
-
-        this.onDoPublish(() => {
-            this.onDidPublish.emit(this.currentProject);
-            this.startPolling();
-        });
+    @emitter
+    onDoPublish() {
+        this.onDidPublish.emit(this.currentProject);
+        this.startPolling();
     }
 
     startPolling() {
@@ -47,7 +44,7 @@ export default class ProjectLogService extends Service {
     }
 
     pullLogs() {
-        return this.projectService.getBuildingInfo(this.currentProject.id)
+        return this.projectApiService.getBuildingInfo(this.currentProject.id)
             .then(res => {
                 this.running = res.data.running;
                 this.success = res.data.success;

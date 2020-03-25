@@ -539,6 +539,7 @@ node scripts/slave.js
 * sn-project-server: 7008
 * sn-project-admin: 7010
 * newyear: 7009
+* sn-content-web: 7011
 
 ## rpc服务提供者
 * registry: 3006
@@ -551,3 +552,4 @@ node scripts/slave.js
 * sn-user-serv: 3012
 * sn-base-serv: 3013
 * sn-stock-serv: 3014
+* sn-content-serv: 3015

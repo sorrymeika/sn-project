@@ -87,10 +87,10 @@ function ProjectList({
     );
 }
 
-export default inject(({ projectListService }) => {
+export default inject(({ projectListViewModel }) => {
     return {
-        dataSource: projectListService.projectList,
-        onShowLog: projectListService.onShowLog.emit,
-        onPublish: projectListService.onPublish.emit
+        dataSource: projectListViewModel.projectList,
+        onShowLog: projectListViewModel.onShowLog.emit,
+        onPublish: projectListViewModel.onPublish.emit
     };
 })(ProjectList);

@@ -81,12 +81,12 @@ function ProjectModal({
     );
 }
 
-export default inject(({ projectModalService }) => {
+export default inject(({ projectModalViewModel }) => {
     return {
-        visible: projectModalService.isModalVisible,
-        formData: projectModalService.formData,
-        onFieldsChange: projectModalService.onFieldsChange.emit,
-        onCancel: projectModalService.onCancel.emit,
-        onSubmit: projectModalService.onSubmit.emit
+        visible: projectModalViewModel.isModalVisible,
+        formData: projectModalViewModel.formData,
+        onFieldsChange: projectModalViewModel.onFieldsChange,
+        onCancel: projectModalViewModel.onCancel,
+        onSubmit: projectModalViewModel.onSubmit
     };
 })(ProjectModal);

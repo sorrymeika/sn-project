@@ -1,6 +1,6 @@
 import { Service } from "snowball/app";
 
-export default class ProjectService extends Service {
+export default class ProjectApiService extends Service {
     getGits() {
         return this.app.server.post('/project/getGits');
     }

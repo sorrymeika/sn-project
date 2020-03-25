@@ -37,12 +37,12 @@ function ProjectLogsModal({
     );
 }
 
-export default inject(({ projectLogService }) => {
+export default inject(({ projectLogViewModel }) => {
     return {
-        currentProject: projectLogService.currentProject,
-        visible: projectLogService.isModalVisible,
-        logs: projectLogService.logs,
-        onDoPublish: projectLogService.onDoPublish.emit,
-        onCancel: projectLogService.onCancel.emit
+        currentProject: projectLogViewModel.currentProject,
+        visible: projectLogViewModel.isModalVisible,
+        logs: projectLogViewModel.logs,
+        onDoPublish: projectLogViewModel.onDoPublish.emit,
+        onCancel: projectLogViewModel.onCancel.emit
     };
 })(ProjectLogsModal);
