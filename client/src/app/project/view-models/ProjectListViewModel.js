@@ -5,14 +5,11 @@ export default class ProjectListViewModel extends ViewModel {
     @observable
     projectList;
 
-    @observable
-    publishingProject;
-
     @autowired
     projectApiService;
 
     @autowired
-    projectLogViewModel;
+    _projectLogViewModel;
 
     @autowired
     projectModalViewModel;
@@ -23,7 +20,7 @@ export default class ProjectListViewModel extends ViewModel {
         this.projectModalViewModel.onSuccess(() => {
             this.load();
         });
-        this.projectLogViewModel.onDidPublish((project) => this.publish(project));
+        this._projectLogViewModel.onDidPublish((project) => this.publish(project));
     }
 
     @emitter
@@ -38,7 +35,7 @@ export default class ProjectListViewModel extends ViewModel {
 
     @emitter
     onShowLog(project) {
-        this.projectLogViewModel.show(project);
+        this._projectLogViewModel.show(project);
     }
 
     init() {

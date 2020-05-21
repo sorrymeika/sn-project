@@ -3,8 +3,11 @@ import { emitter, autowired, ViewModel } from "snowball/app";
 import { message } from "antd";
 
 export default class ProjectModalViewModel extends ViewModel {
-    @observable isModalVisible = false;
-    @observable formData = {};
+    @observable
+    visible = false;
+
+    @observable
+    formData = {};
 
     @autowired
     projectApiService;
@@ -29,11 +32,11 @@ export default class ProjectModalViewModel extends ViewModel {
 
     show(data = {}) {
         this.formData = data;
-        this.isModalVisible = true;
+        this.visible = true;
     }
 
     hide() {
-        this.isModalVisible = false;
+        this.visible = false;
     }
 
     async submit(data) {

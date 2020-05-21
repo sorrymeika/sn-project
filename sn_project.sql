@@ -49,6 +49,11 @@ create table project (
 
 alter table project add UNIQUE nameIndex (name);
 
+create table projectEnv (
+    id int(11) primary key auto_increment,
+    projectId int(11),
+);
+
 -- html
 insert into project (name,gitUrl,type,status) values ('snowball','git@github.com:sorrymeika/snowball.git',1,0);
 insert into project (name,gitUrl,type,status) values ('sn-cornerstore','git@github.com:sorrymeika/sn-cornerstore.git',1,0);

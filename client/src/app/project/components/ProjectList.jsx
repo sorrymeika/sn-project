@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Divider } from 'antd';
-import { inject } from 'snowball/app';
+import { inject, autowired } from 'snowball/app';
 import ProjectLogsModal from './ProjectLogsModal';
 import ProjectModal from './ProjectModal';
 
@@ -87,7 +87,8 @@ function ProjectList({
     );
 }
 
-export default inject(({ projectListViewModel }) => {
+export default inject(() => {
+    const projectListViewModel = autowired('projectListViewModel');
     return {
         dataSource: projectListViewModel.projectList,
         onShowLog: projectListViewModel.onShowLog.emit,

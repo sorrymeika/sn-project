@@ -1,5 +1,5 @@
 {
-  "name": "sn-project-admin",
+  "name": "sn-project-watcher",
   "version": "0.0.1",
   "main": "index.js",
   "author": "sunlu",
@@ -19,8 +19,8 @@
   },
   "scripts": {
     "dev": "egg-bin dev --port 7010",
-    "start": "egg-scripts start --port=7010 --daemon --title=egg-sn-project-admin",
-    "stop": "egg-scripts stop --title=egg-sn-project-admin",
+    "start": "egg-scripts start --port=7010 --daemon --title=egg-sn-project-watcher",
+    "stop": "egg-scripts stop --title=egg-sn-project-watcher",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

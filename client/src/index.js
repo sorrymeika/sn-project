@@ -7,10 +7,10 @@ import { createApplication, Page } from "snowball/app";
 import { LocaleProvider } from "antd";
 import zhCN from 'antd/es/locale-provider/zh_CN';
 
+
 import router from "./app/router";
 import * as projectEnv from "./env";
-
-const { Server } = require('sn-cornerstone');
+import { AppConfiguration } from "./shared/configuration";
 
 const env = {
     ...mainEnv,
@@ -26,19 +26,16 @@ Page.extentions.react({
     }
 });
 
-window.SNOWBALL_MAIN_APP = createApplication({
+createApplication({
     projects,
     routes: router,
     autoStart: true,
     extend(app) {
         return {
-            env,
-            server: new Server({
-                baseUrl: '/server'
-            }),
-            // services: [UserService]
+            env
         };
     },
+    configuration: AppConfiguration,
     options: {
         disableTransition: true
     }

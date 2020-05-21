@@ -8,9 +8,9 @@ class ProjectController extends Controller {
         await app.execCommand('npm', ['stop'], {
             cwd: serverPath
         });
-        // await app.execCommand('npm', ['start'], {
-        //     cwd: serverPath
-        // });
+        await app.execCommand('npm', ['start'], {
+            cwd: serverPath
+        });
         ctx.body = {
             success: true
         };

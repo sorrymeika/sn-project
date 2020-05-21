@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom';
 import React, { useLayoutEffect, useRef } from 'react';
 import { Modal } from 'antd';
-import { inject } from 'snowball/app';
+import { inject, mapViewModelToProps } from 'snowball/app';
 
 function ProjectLogsModal({
     visible,
@@ -37,12 +37,4 @@ function ProjectLogsModal({
     );
 }
 
-export default inject(({ projectLogViewModel }) => {
-    return {
-        currentProject: projectLogViewModel.currentProject,
-        visible: projectLogViewModel.isModalVisible,
-        logs: projectLogViewModel.logs,
-        onDoPublish: projectLogViewModel.onDoPublish.emit,
-        onCancel: projectLogViewModel.onCancel.emit
-    };
-})(ProjectLogsModal);
+export default inject(mapViewModelToProps('projectLogViewModel'))(ProjectLogsModal);

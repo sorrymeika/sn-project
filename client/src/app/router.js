@@ -1,6 +1,5 @@
-import HomeController from "./home/controllers/HomeController";
+import ProjectController from "./project/controllers/ProjectController";
 
 export default {
-    '/': HomeController,
-    '/test': import("./Test"),
+    '/': ProjectController,
 };

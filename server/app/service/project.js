@@ -12,7 +12,7 @@ class ProjectNotExistsError extends Error {
     }
 }
 
-class ProjectApiService extends Service {
+class ProjectService extends Service {
     async getProjects() {
         const rows = await this.app.mysql.query('select id,name,gitUrl,type,status,updateDt from project order by type asc,name asc');
         return rows;
@@ -82,4 +82,4 @@ class ProjectApiService extends Service {
     }
 }
 
-module.exports = ProjectApiService;
+module.exports = ProjectService;

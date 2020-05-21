@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Modal, Input, Select } from 'antd';
-import { inject } from 'snowball/app';
+import { inject, mapViewModelToProps } from 'snowball/app';
 import { NCForm, NCFormItem } from 'nuclear';
 
 const PROJECT_TYPES = [{
@@ -81,12 +81,4 @@ function ProjectModal({
     );
 }
 
-export default inject(({ projectModalViewModel }) => {
-    return {
-        visible: projectModalViewModel.isModalVisible,
-        formData: projectModalViewModel.formData,
-        onFieldsChange: projectModalViewModel.onFieldsChange,
-        onCancel: projectModalViewModel.onCancel,
-        onSubmit: projectModalViewModel.onSubmit
-    };
-})(ProjectModal);
+export default inject(mapViewModelToProps('projectModalViewModel'))(ProjectModal);

@@ -520,6 +520,7 @@ node scripts/slave.js
 
 ## 前台前端
 * juicy: 10100
+* zhuanlan: 10101
 
 ## 后台前端
 * sn-admin: 10020
@@ -537,7 +538,7 @@ node scripts/slave.js
 * sn-user-web: 7006
 * sn-base-web: 7007
 * sn-project-server: 7008
-* sn-project-admin: 7010
+* sn-project-watcher: 7010
 * newyear: 7009
 * sn-content-web: 7011
 
@@ -553,3 +554,10 @@ node scripts/slave.js
 * sn-base-serv: 3013
 * sn-stock-serv: 3014
 * sn-content-serv: 3015
+
+## 错误码
+
+-140: 参数错误
+-320: token错误
+-360: 未登录/无权限
+-1000: 未知错误
