@@ -4,7 +4,7 @@
   "main": "index.js",
   "author": "sunlu",
   "devDependencies": {
-    "egg-bin": "^4.13.1"
+    "egg-bin": "^5.9.0"
   },
   "dependencies": {
     "egg": "^2.23.0",
