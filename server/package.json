@@ -13,7 +13,7 @@
   },
   "homepage": "https://github.com/sorrymeika/sn-project-server#readme",
   "devDependencies": {
-    "egg-bin": "^4.13.1"
+    "egg-bin": "^4.20.0"
   },
   "dependencies": {
     "egg": "^2.23.0",
